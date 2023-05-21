@@ -61,6 +61,11 @@ public class ProductRepository : IProductRepository
                             .ToListAsync();
     }
 
+    public async Task<IEnumerable<ProductModel>> Get(IEnumerable<int> productIds)
+    {
+        return await _context.Products!.Where(q => productIds.Contains(q.Id)).ToListAsync();
+    }
+
     public async Task<ProductModel> Insert(ProductModel model)
     {
         if (model is null) throw new ArgumentNullException(nameof(ProductModel));

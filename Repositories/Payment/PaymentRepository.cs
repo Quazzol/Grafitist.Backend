@@ -4,7 +4,7 @@ using Grafitist.Models.Payment;
 using Grafitist.Repositories.Payment.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Grafitist.Repositories.Stock;
+namespace Grafitist.Repositories.Payment;
 
 public class PaymentRepository : IPaymentRepository
 {

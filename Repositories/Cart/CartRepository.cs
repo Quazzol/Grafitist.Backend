@@ -32,7 +32,7 @@ public class CartRepository : ICartRepository
         return await _context.Carts!.Include(q => q.Lines).FirstOrDefaultAsync(q => q.Id == id);
     }
 
-    public async Task<IEnumerable<CartModel>> GetByUserId(Guid userId, Pager pager)
+    public async Task<IEnumerable<CartModel>> GetByUser(Guid userId, Pager pager)
     {
         return await _context.Carts!.Include(q => q.Lines)
                                     .Where(q => q.UserId == userId)
@@ -46,5 +46,16 @@ public class CartRepository : ICartRepository
         await _context.Carts!.AddAsync(model);
         await _context.SaveChangesAsync();
         return model;
+    }
+
+    public async Task<CartModel> Update(CartModel model)
+    {
+        if (model is null) throw new ArgumentNullException(nameof(CartModel));
+        var cart = await _context.Carts!.FirstOrDefaultAsync(q => q.Id == model.Id);
+        if (cart is null) throw new Exception($"Model.Id not found! {model.Id}");
+
+        cart.Status = model.Status;
+        await _context.SaveChangesAsync();
+        return cart;
     }
 }

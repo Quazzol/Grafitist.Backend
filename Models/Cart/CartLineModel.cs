@@ -11,6 +11,5 @@ public class CartLineModel
     [Required] public int ProductId { get; set; }
     public virtual ProductModel? Product { get; set; }
     public int Quantity { get; set; }
-    public double Amount { get; set; }
     [Required] public Guid CartId { get; set; }
 }

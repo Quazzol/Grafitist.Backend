@@ -15,5 +15,5 @@ public class ProductModel
     public virtual VariantModel? Variant { get; set; }
     public double Price { get; set; }
     public bool IsActive { get; set; }
-    public ICollection<ImageModel>? Images { get; set; }
+    public IEnumerable<ImageModel>? Images { get; set; }
 }

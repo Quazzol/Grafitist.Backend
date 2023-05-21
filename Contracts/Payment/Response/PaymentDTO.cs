@@ -1,7 +1,7 @@
-using Grafitist.Contracts.Order;
+using Grafitist.Contracts.Order.Response;
 using Grafitist.Contracts.User.Response;
 
-namespace Grafitist.Contracts.Payment;
+namespace Grafitist.Contracts.Payment.Response;
 
 public class PaymentDTO
 {

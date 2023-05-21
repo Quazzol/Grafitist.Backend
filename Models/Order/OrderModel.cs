@@ -15,6 +15,8 @@ public class OrderModel
     public Guid CartId { get; set; }
     public virtual CartModel? Cart { get; set; }
     public string? OrderNumber { get; set; }
+    public double Amount { get; set; }
     public OrderStatus Status { get; set; }
     public DateTime CreatedDate { get; set; }
+    public IEnumerable<OrderLineModel>? Lines { get; set; }
 }

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Grafitist.Contracts.Payment;
+namespace Grafitist.Contracts.Payment.Request;
 
 public class PaymentInsertDTO
 {
@@ -8,4 +8,5 @@ public class PaymentInsertDTO
     [Required] public Guid OrderId { get; set; }
     public string? FullName { get; set; }
     public double Amount { get; set; }
+    public string? Hash { get; set; }
 }

@@ -58,8 +58,8 @@ public class CampaignRepository : ICampaignRepository
         campaign.Code = model.Code;
         campaign.Description = model.Description;
         campaign.Type = model.Type;
-        campaign.CampaignTypeId = model.CampaignTypeId;
         campaign.MinimumPrice = model.MinimumPrice;
+        campaign.CampaignTypeId = model.CampaignTypeId;
         campaign.Percent = model.Percent;
         campaign.IsActive = model.IsActive;
         await _context.SaveChangesAsync();

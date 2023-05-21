@@ -50,7 +50,6 @@ public class CartLineRepository : ICartLineRepository
 
         cartLine.ProductId = model.ProductId;
         cartLine.Quantity = model.Quantity;
-        cartLine.Amount = model.Amount;
         await _context.SaveChangesAsync();
         return cartLine;
     }

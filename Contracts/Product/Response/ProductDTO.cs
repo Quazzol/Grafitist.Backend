@@ -12,5 +12,5 @@ public class ProductDTO
     public double Price { get; set; }
     public double CampaignPrice { get; set; }
     public bool IsActive { get; set; }
-    public ICollection<ImageDTO>? Images { get; set; }
+    public IEnumerable<ImageDTO>? Images { get; set; }
 }

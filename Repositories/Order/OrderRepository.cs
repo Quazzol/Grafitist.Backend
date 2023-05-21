@@ -5,7 +5,7 @@ using Grafitist.Repositories.Order.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Misc.Enums;
 
-namespace Grafitist.Repositories.Stock;
+namespace Grafitist.Repositories.Order;
 
 public class OrderRepository : IOrderRepository
 {

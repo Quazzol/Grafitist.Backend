@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Misc.Enums;
 
-namespace Grafitist.Contracts.Order;
+namespace Grafitist.Contracts.Order.Request;
 
 public class OrderUpdateDTO
 {

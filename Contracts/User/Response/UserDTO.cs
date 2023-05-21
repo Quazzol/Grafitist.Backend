@@ -10,5 +10,5 @@ public class UserDTO
     public string? Surname { get; set; }
     public string? Email { get; set; }
     public string? Phone { get; set; }
-    public ICollection<AddressDTO>? Addresses { get; set; }
+    public IEnumerable<AddressDTO>? Addresses { get; set; }
 }
