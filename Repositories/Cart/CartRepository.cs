@@ -51,7 +51,7 @@ public class CartRepository : ICartRepository
     public async Task<CartModel> Update(CartModel model)
     {
         if (model is null) throw new ArgumentNullException(nameof(CartModel));
-        var cart = await _context.Carts!.FirstOrDefaultAsync(q => q.Id == model.Id);
+        var cart = await _context.Carts!.Include(q => q.Lines).FirstOrDefaultAsync(q => q.Id == model.Id);
         if (cart is null) throw new Exception($"Model.Id not found! {model.Id}");
 
         cart.Status = model.Status;

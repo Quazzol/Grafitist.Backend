@@ -15,13 +15,13 @@ public class StockController : ControllerBase
         _service = service;
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> Get(int id)
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> Get(int productId)
     {
-        return Ok(await _service.Get(id));
+        return Ok(await _service.Get(productId));
     }
 
-    [HttpGet("by-product-id")]
+    [HttpGet("multiple")]
     public async Task<IActionResult> Get([FromQuery] int[] productId)
     {
         return Ok(await _service.Get(productId));

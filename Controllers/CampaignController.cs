@@ -23,14 +23,14 @@ public class CampaignController : ControllerBase
         return Ok(await _service.Get(new Pager { No = pageNo, Count = count, OnlyActive = onlyActive }));
     }
 
-    [HttpGet()]
+    [HttpGet("{id:Guid}")]
     public async Task<IActionResult?> Get(Guid id)
     {
         return Ok(await _service.Get(id));
     }
 
-    [HttpGet("type")]
-    public async Task<IActionResult> Get([FromQuery] CampaignType type)
+    [HttpGet("type/{type:int}")]
+    public async Task<IActionResult> Get(CampaignType type)
     {
         return Ok(await _service.Get(type));
     }
@@ -47,15 +47,15 @@ public class CampaignController : ControllerBase
         return Ok(await _service.Update(dto));
     }
 
-    [HttpDelete()]
+    [HttpDelete("{id:Guid}")]
     public async Task Delete(Guid id)
     {
         await _service.Delete(id);
     }
 
-    [HttpGet("deactivate")]
-    public async Task Deactivate([FromQuery] Guid id)
+    [HttpGet("deactivate/{id:Guid}")]
+    public async Task<IActionResult> Deactivate(Guid id)
     {
-        await _service.Deactivate(id);
+        return Ok(await _service.Deactivate(id));
     }
 }

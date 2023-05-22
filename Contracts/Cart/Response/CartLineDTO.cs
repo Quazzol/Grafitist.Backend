@@ -3,7 +3,7 @@ using Grafitist.Misc.Interfaces;
 
 namespace Grafitist.Contracts.Cart.Response;
 
-public class CartLineDTO : IHasCalculatableAmount
+public class CartLineDTO : ITransactionLine
 {
     public Guid Id { get; set; }
     public int ProductId { get; set; }

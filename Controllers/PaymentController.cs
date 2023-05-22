@@ -14,26 +14,31 @@ public class PaymentController : ControllerBase
         _service = service;
     }
 
+    [HttpGet("{id:Guid}")]
     public async Task<IActionResult?> Get(Guid id)
     {
         return Ok(await _service.Get(id));
     }
 
+    [HttpGet("get-by-order/{orderId:Guid}")]
     public async Task<IActionResult> GetByOrder(Guid orderId)
     {
         return Ok(await _service.GetByOrder(orderId));
     }
 
-    public async Task<IActionResult> Get(Guid userId, [FromQuery] int pageNo, [FromQuery] int count, [FromQuery] bool onlyActive)
+    [HttpGet("get-by-user/{userId:Guid}")]
+    public async Task<IActionResult> GetByUser(Guid userId, [FromQuery] int pageNo, [FromQuery] int count, [FromQuery] bool onlyActive)
     {
         return Ok(await _service.Get(userId, new Pager { No = pageNo, Count = count, OnlyActive = onlyActive }));
     }
 
-    public async Task<IActionResult> Get(DateTime startTime, DateTime endTime, [FromQuery] int pageNo, [FromQuery] int count, [FromQuery] bool onlyActive)
+    [HttpGet("get")]
+    public async Task<IActionResult> Get([FromQuery] DateTime startTime, [FromQuery] DateTime endTime, [FromQuery] int pageNo, [FromQuery] int count, [FromQuery] bool onlyActive)
     {
         return Ok(await _service.Get(new DateFilter { StartDate = startTime, EndDate = endTime }, new Pager { No = pageNo, Count = count, OnlyActive = onlyActive }));
     }
 
+    [HttpPost]
     public async Task<IActionResult> Insert(PaymentInsertDTO model)
     {
         return Ok(await _service.Insert(model));

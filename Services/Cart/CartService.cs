@@ -1,12 +1,15 @@
 using AutoMapper;
 using Grafitist.Contracts.Cart.Request;
 using Grafitist.Contracts.Cart.Response;
+using Grafitist.Contracts.Order.Request;
 using Grafitist.Misc;
 using Grafitist.Misc.Enums;
 using Grafitist.Misc.Interfaces;
 using Grafitist.Models.Cart;
 using Grafitist.Repositories.Cart.Interfaces;
 using Grafitist.Services.Cart.Interfaces;
+using Grafitist.Services.Order.Interfaces;
+using Misc.Enums;
 
 namespace Grafitist.CartService.Services;
 
@@ -17,19 +20,54 @@ public class CartService : ICartService
     private readonly IUserContext _userContext;
     private readonly IMapper _mapper;
     private readonly IPriceManager _priceManager;
+    private readonly IOrderService _orderService;
 
-    public CartService(ICartRepository repository, ICartLineRepository lineRepository, IUserContext userContext, IMapper mapper, IPriceManager priceManager)
+    public CartService(ICartRepository repository, ICartLineRepository lineRepository, IUserContext userContext, IMapper mapper, IPriceManager priceManager, IOrderService orderService)
     {
         _repository = repository;
         _lineRepository = lineRepository;
         _userContext = userContext;
         _mapper = mapper;
         _priceManager = priceManager;
+        _orderService = orderService;
     }
 
-    public async Task ApproveCart(Guid id)
+    public async Task<CartDTO> ApproveCart(Guid id)
     {
-        await _repository.Update(new CartModel { Id = id, Status = CartStatus.Completed });
+        var cart = _mapper.Map<CartDTO>(await _repository.Update(new CartModel { Id = id, Status = CartStatus.Completed }));
+        await _orderService.Insert(CreateOrder());
+        return cart;
+
+        OrderInsertDTO CreateOrder()
+        {
+            var order = new OrderInsertDTO
+            {
+                CartId = cart.Id,
+                Status = OrderStatus.Pending,
+                UserId = cart.UserId
+            };
+
+            var orderLines = new List<OrderLineInsertDTO>();
+            foreach (var cartLine in cart.Lines!)
+            {
+                orderLines.Add(CreateOrderLine(order.Id, cartLine));
+            }
+
+            order.Lines = orderLines;
+            return order;
+        }
+
+        OrderLineInsertDTO CreateOrderLine(Guid orderId, ITransactionLine cartLine)
+        {
+            return new OrderLineInsertDTO
+            {
+                OrderId = orderId,
+                Amount = cartLine.Amount,
+                CampaignId = cartLine.CampaignId,
+                ProductId = cartLine.ProductId,
+                Quantity = cartLine.ProductId
+            };
+        }
     }
 
     public async Task ClearCart(Guid id)
@@ -49,7 +87,7 @@ public class CartService : ICartService
         return cart;
     }
 
-    public async Task<IEnumerable<CartDTO>> GetByUserId(Guid id, Pager pager)
+    public async Task<IEnumerable<CartDTO>> GetByUser(Guid id, Pager pager)
     {
         var carts = _mapper.Map<IEnumerable<CartDTO>>(await _repository.GetByUser(id, pager));
         foreach (var cart in carts)
@@ -59,7 +97,7 @@ public class CartService : ICartService
         return carts;
     }
 
-    public async Task<CartDTO> InsertLine(CartLineInsertDTO dto)
+    public async Task<CartDTO> Insert(CartLineInsertDTO dto)
     {
         CartModel? cartModel;
         if (dto.CartId.IsEmpty())
@@ -72,15 +110,16 @@ public class CartService : ICartService
                 CreatedDate = DateTime.UtcNow
             };
 
-            await _repository.Insert(cartModel);
             dto.CartId = cartModel.Id;
         }
 
         await _lineRepository.Insert(_mapper.Map<CartLineModel>(dto));
-        return _mapper.Map<CartDTO>(await _repository.Get(dto.CartId));
+        var cart = _mapper.Map<CartDTO>(await _repository.Get(dto.CartId));
+        await CalculateAmounts(cart);
+        return cart;
     }
 
-    public async Task<CartDTO> UpdateLine(CartLineUpdateDTO dto)
+    public async Task<CartDTO> Update(CartLineUpdateDTO dto)
     {
         var cartLine = await _lineRepository.Update(_mapper.Map<CartLineModel>(dto));
         return _mapper.Map<CartDTO>(_repository.Get(cartLine.CartId));

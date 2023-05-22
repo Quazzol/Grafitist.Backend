@@ -20,6 +20,7 @@ public class AppDbContext : DbContext
     public DbSet<CartLineModel>? CartLines { get; set; }
 
     public DbSet<OrderModel>? Orders { get; set; }
+    public DbSet<OrderLineModel>? OrderLines { get; set; }
 
     public DbSet<PaymentModel>? Payments { get; set; }
 

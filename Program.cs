@@ -51,7 +51,9 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<ICampaignRepository, CampaignRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICartLineRepository, CartLineRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderLineRepository, OrderLineRepository>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IColorRepository, ColorRepository>();
@@ -81,6 +83,7 @@ builder.Services.AddScoped<IAddressDataService, AddressDataService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
+builder.Services.AddScoped<IPriceManager, PriceManager>();
 builder.Services.AddScoped<IImageManager, ImageManager>();
 builder.Services.AddScoped<IPriceManager, PriceManager>();
 builder.Services.AddScoped<IUserContext, UserContext>();

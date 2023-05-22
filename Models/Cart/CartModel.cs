@@ -10,6 +10,6 @@ public class CartModel
     [Key] public Guid Id { get; set; } = Guid.NewGuid();
     [Required] public Guid UserId { get; set; }
     public CartStatus Status { get; set; }
-    public DateTime CreatedDate { get; set; }
+    public DateTime CreatedDate { get; set; } = DateTime.Now;
     public IEnumerable<CartLineModel>? Lines { get; set; }
 }

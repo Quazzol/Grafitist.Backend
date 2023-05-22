@@ -27,18 +27,17 @@ public class PaymentRepository : IPaymentRepository
 
     public async Task<PaymentModel?> Get(Guid id)
     {
-        return await _context.Payments!.Include(q => q.Order).Include(q => q.User).FirstOrDefaultAsync(q => q.Id == id);
+        return await _context.Payments!.Include(q => q.User).FirstOrDefaultAsync(q => q.Id == id);
     }
 
     public async Task<PaymentModel?> GetByOrder(Guid orderId)
     {
-        return await _context.Payments!.Include(q => q.Order).Include(q => q.User).FirstOrDefaultAsync(q => q.OrderId == orderId);
+        return await _context.Payments!.Include(q => q.User).FirstOrDefaultAsync(q => q.OrderId == orderId);
     }
 
     public async Task<IEnumerable<PaymentModel>> Get(Guid userId, Pager pager)
     {
         return await _context.Payments!.Where(q => q.UserId == userId)
-                                        .Include(q => q.Order)
                                         .Include(q => q.User)
                                         .Skip(pager.Count * (pager.No - 1))
                                         .Take(pager.Count).ToListAsync();

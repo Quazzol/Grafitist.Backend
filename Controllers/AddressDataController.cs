@@ -15,7 +15,7 @@ public class AddressDataController : ControllerBase
         _service = service;
     }
 
-    [HttpGet("district/{id}")]
+    [HttpGet("district/{id:int}")]
     public async Task<IActionResult> GetDistricts(int cityId)
     {
         return Ok(await _service.GetDistricts(cityId));
@@ -39,13 +39,13 @@ public class AddressDataController : ControllerBase
         return Ok(await _service.InsertDistrict(dto));
     }
 
-    [HttpDelete("city/{cityId}")]
+    [HttpDelete("city/{cityId:int}")]
     public async Task DeleteCity(int cityId)
     {
         await _service.DeleteCity(cityId);
     }
 
-    [HttpDelete("district/{districtId}")]
+    [HttpDelete("district/{districtId:int}")]
     public async Task DeleteDistrict(int districtId)
     {
         await _service.DeleteDistrict(districtId);

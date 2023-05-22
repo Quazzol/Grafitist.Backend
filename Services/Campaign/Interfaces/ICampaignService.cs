@@ -13,5 +13,5 @@ public interface ICampaignService
     public Task<CampaignDTO> Insert(CampaignInsertDTO dto);
     public Task<CampaignDTO> Update(CampaignUpdateDTO dto);
     public Task Delete(Guid id);
-    public Task Deactivate(Guid id);
+    public Task<CampaignDTO> Deactivate(Guid id);
 }

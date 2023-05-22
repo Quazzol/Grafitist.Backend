@@ -4,7 +4,7 @@ using Grafitist.Misc.Interfaces;
 
 namespace Grafitist.Contracts.Order.Response;
 
-public class OrderLineDTO : IHasCalculatableAmount
+public class OrderLineDTO : ITransactionLine
 {
     public Guid Id { get; set; }
     public int ProductId { get; set; }

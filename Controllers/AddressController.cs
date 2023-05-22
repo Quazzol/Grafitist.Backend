@@ -21,7 +21,7 @@ public class AddressController : ControllerBase
         return Ok(await _service.Get(id));
     }
 
-    [HttpGet("get-by-user/{userId}")]
+    [HttpGet("get-by-user/{userId:Guid}")]
     public async Task<IActionResult> Get(Guid userId)
     {
         return Ok(await _service.Get(userId));
@@ -43,7 +43,7 @@ public class AddressController : ControllerBase
         return Ok(await _service.Update(dto));
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task Delete(int id)
     {
         await _service.Delete(id);

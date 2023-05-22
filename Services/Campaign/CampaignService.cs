@@ -20,13 +20,13 @@ public class CampaignService : ICampaignService
         _mapper = mapper;
     }
 
-    public async Task Deactivate(Guid id)
+    public async Task<CampaignDTO> Deactivate(Guid id)
     {
         var model = await _repository.Get(id);
         if (model is null)
-            return;
+            throw new KeyNotFoundException(id.ToString());
         model.IsActive = false;
-        await _repository.Update(model);
+        return _mapper.Map<CampaignDTO>(await _repository.Update(model));
     }
 
     public async Task Delete(Guid id)

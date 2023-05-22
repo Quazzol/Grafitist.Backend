@@ -15,7 +15,7 @@ public class MaterialController : ControllerBase
         _service = service;
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> Get(int id)
     {
         return Ok(await _service.Get(id));
@@ -39,7 +39,7 @@ public class MaterialController : ControllerBase
         return Ok(await _service.Update(dto));
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task Delete(int id)
     {
         await _service.Delete(id);

@@ -3,7 +3,7 @@ using Grafitist.Misc.Interfaces;
 
 namespace Grafitist.Contracts.Order.Request;
 
-public class OrderLineInsertDTO : IHasCalculatableAmount
+public class OrderLineInsertDTO : ITransactionLine
 {
     [Required] public int ProductId { get; set; }
     public double Amount { get; set; }

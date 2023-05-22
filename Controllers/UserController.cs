@@ -16,13 +16,13 @@ public class UserController : ControllerBase
         _service = service;
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:Guid}")]
     public async Task<IActionResult> Get(Guid id)
     {
         return Ok(await _service.Get(id));
     }
 
-    [HttpGet()]
+    [HttpGet("get")]
     public async Task<IActionResult> Get([FromQuery] int pageNo, [FromQuery] int count, [FromQuery] bool onlyActive)
     {
         return Ok(await _service.Get(new Pager { No = pageNo, Count = count, OnlyActive = onlyActive }));
@@ -52,7 +52,7 @@ public class UserController : ControllerBase
         return Ok(await _service.Update(dto));
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:Guid}")]
     public async Task Delete(Guid id)
     {
         await _service.Delete(id);

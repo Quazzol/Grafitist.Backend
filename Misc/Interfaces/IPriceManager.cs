@@ -2,6 +2,7 @@ namespace Grafitist.Misc.Interfaces;
 
 public interface IPriceManager
 {
-    public Task CalculateDiscountedPrices(IEnumerable<IHasCalculatableAmount>? amounts);
+    public Task CalculateDiscountedPrice(ITransactionLine transactionLine);
+    public Task CalculateDiscountedPrices(IEnumerable<ITransactionLine>? transactionLines);
     public Task<double> CalculateTotalDiscountedPrice(double totalAmount);
 }

@@ -17,39 +17,47 @@ public class PriceManager : IPriceManager
         _productRepository = productRepository;
     }
 
-    public async Task CalculateDiscountedPrice(IHasCalculatableAmount amount)
+    public async Task CalculateDiscountedPrice(ITransactionLine transactionLine)
     {
-        if (amount is null)
+        if (transactionLine is null)
             return;
 
-        var product = await _productRepository.Get(amount.ProductId);
+        var product = await _productRepository.Get(transactionLine.ProductId);
+        if (product is null)
+            return;
+
         var campaigns = await _campaignRepository.Get(new Pager { No = 1, Count = 100, OnlyActive = true });
+        SetAmount(transactionLine, product.Price, Guid.Empty);
+
         foreach (var campaign in campaigns)
         {
-
+            if (campaign.Type == Enums.CampaignType.Cart || campaign.Type == Enums.CampaignType.FreeShipping)
+                continue;
+            SetAmount(transactionLine, FindDiscountedPrice(campaign, CampaignType.Category, product.Item!.CategoryId, product.Price), campaign.Id);
+            SetAmount(transactionLine, FindDiscountedPrice(campaign, CampaignType.Item, product.ItemId, product.Price), campaign.Id);
+            SetAmount(transactionLine, FindDiscountedPrice(campaign, CampaignType.Product, product.Id, product.Price), campaign.Id);
         }
-        SetAmount(amount, int.MaxValue, Guid.Empty);
     }
 
-    public async Task CalculateDiscountedPrices(IEnumerable<IHasCalculatableAmount>? amounts)
+    public async Task CalculateDiscountedPrices(IEnumerable<ITransactionLine>? transactionLines)
     {
-        if (amounts is null)
+        if (transactionLines is null)
             return;
 
-        var products = await _productRepository.Get(amounts.Select(q => q.ProductId).Distinct());
+        var products = await _productRepository.Get(transactionLines.Select(q => q.ProductId).Distinct());
         var campaigns = await _campaignRepository.Get(new Pager { No = 1, Count = 100, OnlyActive = true });
 
         foreach (var product in products)
         {
-            SetAmount(amounts.Where(q => q.ProductId == product.Id), product.Price, Guid.Empty);
+            SetAmount(transactionLines.Where(q => q.ProductId == product.Id), product.Price, Guid.Empty);
             foreach (var campaign in campaigns)
             {
                 if (campaign.Type == Enums.CampaignType.Cart || campaign.Type == Enums.CampaignType.FreeShipping)
                     continue;
 
-                SetAmount(amounts.Where(q => q.ProductId == product.Id), FindDiscountedPrice(campaign, CampaignType.Category, product.Item!.CategoryId, product.Price), campaign.Id);
-                SetAmount(amounts.Where(q => q.ProductId == product.Id), FindDiscountedPrice(campaign, CampaignType.Item, product.ItemId, product.Price), campaign.Id);
-                SetAmount(amounts.Where(q => q.ProductId == product.Id), FindDiscountedPrice(campaign, CampaignType.Product, product.Id, product.Price), campaign.Id);
+                SetAmount(transactionLines.Where(q => q.ProductId == product.Id), FindDiscountedPrice(campaign, CampaignType.Category, product.Item!.CategoryId, product.Price), campaign.Id);
+                SetAmount(transactionLines.Where(q => q.ProductId == product.Id), FindDiscountedPrice(campaign, CampaignType.Item, product.ItemId, product.Price), campaign.Id);
+                SetAmount(transactionLines.Where(q => q.ProductId == product.Id), FindDiscountedPrice(campaign, CampaignType.Product, product.Id, product.Price), campaign.Id);
             }
         }
     }
@@ -62,17 +70,17 @@ public class PriceManager : IPriceManager
         return (100 - campaigns.Max(q => q.Percent)) * totalAmount;
     }
 
-    private void SetAmount(IHasCalculatableAmount amount, double discountedPrice, Guid campaignId)
+    private void SetAmount(ITransactionLine transactionLine, double discountedPrice, Guid campaignId)
     {
-        if (amount.Amount < discountedPrice)
+        if (transactionLine.Amount < discountedPrice)
             return;
-        amount.Amount = discountedPrice;
-        amount.CampaignId = campaignId;
+        transactionLine.Amount = discountedPrice;
+        transactionLine.CampaignId = campaignId;
     }
 
-    private void SetAmount(IEnumerable<IHasCalculatableAmount> amounts, double discountedPrice, Guid campaignId)
+    private void SetAmount(IEnumerable<ITransactionLine> transactionLines, double discountedPrice, Guid campaignId)
     {
-        foreach (var amount in amounts)
+        foreach (var amount in transactionLines)
         {
             SetAmount(amount, discountedPrice, campaignId);
         }

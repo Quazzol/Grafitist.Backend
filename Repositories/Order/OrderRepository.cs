@@ -28,12 +28,12 @@ public class OrderRepository : IOrderRepository
 
     public async Task<OrderModel?> Get(Guid id)
     {
-        return await _context.Orders!.Include(q => q.User).Include(q => q.Cart).FirstOrDefaultAsync(q => q.Id == id);
+        return await _context.Orders!.Include(q => q.User).Include(q => q.Cart).Include(q => q.Lines).FirstOrDefaultAsync(q => q.Id == id);
     }
 
     public async Task<IEnumerable<OrderModel>> Get(Guid userId, Pager pager)
     {
-        return await _context.Orders!.Where(q => q.UserId == userId).Include(q => q.User).Skip(pager.Count * (pager.No - 1)).Take(pager.Count).ToListAsync();
+        return await _context.Orders!.Where(q => q.UserId == userId).Include(q => q.User).Include(q => q.Lines).Skip(pager.Count * (pager.No - 1)).Take(pager.Count).ToListAsync();
     }
 
     public async Task<IEnumerable<OrderModel>> Get(DateFilter? filter, OrderStatus? status, Pager pager)
@@ -41,6 +41,8 @@ public class OrderRepository : IOrderRepository
         filter = filter ?? new DateFilter();
 
         return await _context.Orders!.Include(q => q.User)
+                                    .Include(q => q.Cart)
+                                    .Include(q => q.Lines)
                                     .Where(q => q.CreatedDate >= filter.StartDate
                                             && q.CreatedDate <= filter.EndDate
                                             && (status == null || q.Status == status))
@@ -51,9 +53,15 @@ public class OrderRepository : IOrderRepository
     public async Task<OrderModel> Insert(OrderModel model)
     {
         if (model is null) throw new ArgumentNullException(nameof(OrderModel));
+        model.OrderNumber = CreateOrderNumber();
         await _context.Orders!.AddAsync(model);
         await _context.SaveChangesAsync();
         return model;
+
+        string CreateOrderNumber()
+        {
+            return string.Format("{0}-{1:00}{2:000}", model.UserId.ToString("N").Substring(0, 5), model.CreatedDate.Second, model.CreatedDate.Millisecond);
+        }
     }
 
     public async Task<OrderModel> Update(OrderModel model)

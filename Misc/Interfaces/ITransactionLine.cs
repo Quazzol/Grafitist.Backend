@@ -1,6 +1,6 @@
 namespace Grafitist.Misc.Interfaces;
 
-public interface IHasCalculatableAmount
+public interface ITransactionLine
 {
     public double Amount { get; set; }
     public int Quantity { get; set; }

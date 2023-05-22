@@ -13,5 +13,7 @@ public class OrderProfile : Profile
         CreateMap<OrderModel, OrderDTO>();
         CreateMap<OrderInsertDTO, OrderModel>();
         CreateMap<OrderUpdateDTO, OrderModel>();
+        CreateMap<OrderLineModel, OrderLineDTO>();
+        CreateMap<OrderLineInsertDTO, OrderLineModel>();
     }
 }
