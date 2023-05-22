@@ -16,7 +16,7 @@ public class OrderLineRepository : IOrderLineRepository
 
     public async Task<IEnumerable<OrderLineModel>> Get(Guid orderId)
     {
-        return await _context.OrderLines!.Include(q => q.Campaign).Include(q => q.Product).Where(q => q.OrderId == orderId).ToListAsync();
+        return await _context.OrderLines!.Include(q => q.Campaign).Include(q => q.Product).Where(q => q.OrderId == orderId).OrderBy(q => q.ProductId).ToListAsync();
     }
 
     public async Task<OrderLineModel> Insert(OrderLineModel model)

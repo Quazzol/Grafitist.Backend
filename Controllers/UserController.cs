@@ -31,7 +31,7 @@ public class UserController : ControllerBase
     [HttpPost("sign-in")]
     public async Task<IActionResult> SignIn(UserSignInDTO dto)
     {
-        if (TryValidateModel(dto))
+        if (!TryValidateModel(dto))
             return ValidationProblem(ModelState);
         return Ok(await _service.SignIn(dto));
     }
@@ -39,7 +39,7 @@ public class UserController : ControllerBase
     [HttpPost()]
     public async Task<IActionResult> Insert(UserInsertDTO dto)
     {
-        if (TryValidateModel(dto))
+        if (!TryValidateModel(dto))
             return ValidationProblem(ModelState);
         return Ok(await _service.Insert(dto));
     }
@@ -47,7 +47,7 @@ public class UserController : ControllerBase
     [HttpPut()]
     public async Task<IActionResult> Update(UserUpdateDTO dto)
     {
-        if (TryValidateModel(dto))
+        if (!TryValidateModel(dto))
             return ValidationProblem(ModelState);
         return Ok(await _service.Update(dto));
     }

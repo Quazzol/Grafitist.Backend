@@ -36,6 +36,7 @@ public class CartRepository : ICartRepository
     {
         return await _context.Carts!.Include(q => q.Lines)
                                     .Where(q => q.UserId == userId)
+                                    .OrderByDescending(q => q.CreatedDate)
                                     .Skip(pager.Count * (pager.No - 1))
                                     .Take(pager.Count).ToListAsync();
     }

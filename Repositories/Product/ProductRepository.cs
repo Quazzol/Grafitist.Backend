@@ -80,6 +80,7 @@ public class ProductRepository : IProductRepository
         var product = await _context.Products!.FirstOrDefaultAsync(q => q.Id == model.Id);
         if (product is null) throw new KeyNotFoundException($"Model.Id not found! {model.Id}");
 
+        product.Description = model.Description;
         product.ColorId = model.ColorId;
         product.VariantId = model.VariantId;
         product.IsActive = model.IsActive;

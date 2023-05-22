@@ -33,7 +33,12 @@ public class OrderRepository : IOrderRepository
 
     public async Task<IEnumerable<OrderModel>> Get(Guid userId, Pager pager)
     {
-        return await _context.Orders!.Where(q => q.UserId == userId).Include(q => q.User).Include(q => q.Lines).Skip(pager.Count * (pager.No - 1)).Take(pager.Count).ToListAsync();
+        return await _context.Orders!.Where(q => q.UserId == userId)
+                                    .Include(q => q.User)
+                                    .Include(q => q.Lines)
+                                    .OrderByDescending(q => q.CreatedDate)
+                                    .Skip(pager.Count * (pager.No - 1))
+                                    .Take(pager.Count).ToListAsync();
     }
 
     public async Task<IEnumerable<OrderModel>> Get(DateFilter? filter, OrderStatus? status, Pager pager)
@@ -46,6 +51,7 @@ public class OrderRepository : IOrderRepository
                                     .Where(q => q.CreatedDate >= filter.StartDate
                                             && q.CreatedDate <= filter.EndDate
                                             && (status == null || q.Status == status))
+                                    .OrderByDescending(q => q.CreatedDate)
                                     .Skip(pager.Count * (pager.No - 1))
                                     .Take(pager.Count).ToListAsync();
     }

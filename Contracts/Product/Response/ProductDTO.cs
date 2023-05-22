@@ -3,6 +3,7 @@ namespace Grafitist.Contracts.Product.Response;
 public class ProductDTO
 {
     public int Id { get; set; }
+    public string? Description { get; set; }
     public int ItemId { get; set; }
     public ItemDTO? Item { get; set; }
     public int? ColorId { get; set; }

@@ -7,6 +7,7 @@ namespace Grafitist.Models.Product;
 public class ProductModel
 {
     [Key] public int Id { get; set; }
+    public string? Description { get; set; }
     public int ItemId { get; set; }
     public ItemModel? Item { get; set; }
     public int? ColorId { get; set; }

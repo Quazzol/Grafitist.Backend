@@ -38,6 +38,7 @@ public class PaymentRepository : IPaymentRepository
     public async Task<IEnumerable<PaymentModel>> Get(Guid userId, Pager pager)
     {
         return await _context.Payments!.Where(q => q.UserId == userId)
+                                        .OrderByDescending(q => q.CreatedDate)
                                         .Include(q => q.User)
                                         .Skip(pager.Count * (pager.No - 1))
                                         .Take(pager.Count).ToListAsync();
@@ -46,6 +47,7 @@ public class PaymentRepository : IPaymentRepository
     public async Task<IEnumerable<PaymentModel>> Get(DateFilter filter, Pager pager)
     {
         return await _context.Payments!.Where(q => q.CreatedDate >= filter.StartDate && q.CreatedDate <= filter.EndDate)
+                                        .OrderByDescending(q => q.CreatedDate)
                                         .Skip(pager.Count * (pager.No - 1))
                                         .Take(pager.Count).ToListAsync();
     }
