@@ -32,6 +32,10 @@ using Grafitist.Services.Payment.Interfaces;
 using Grafitist.Services.Product.Interfaces;
 using Grafitist.Services.Stock.Interfaces;
 using Grafitist.Misc.Managers;
+using Grafitist.Services.CompanyInfo.Interfaces;
+using Grafitist.Services.CompanyInfo;
+using Grafitist.Repositories.CompanyInfo.Interfaces;
+using Grafitist.Repositories.CompanyInfo;
 
 var builder = WebApplication.CreateBuilder(args);
 var corsOriginsPolicy = "CorsOrigins";
@@ -66,6 +70,7 @@ builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<IAddressDataRepository, AddressDataRepository>();
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICompanyInfoRepository, CompanyInfoRepository>();
 
 builder.Services.AddScoped<ICampaignService, CampaignService>();
 builder.Services.AddScoped<ICartService, CartService>();
@@ -82,6 +87,7 @@ builder.Services.AddScoped<IStockService, StockService>();
 builder.Services.AddScoped<IAddressDataService, AddressDataService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICompanyInfoService, CompanyInfoService>();
 
 builder.Services.AddScoped<IPriceManager, PriceManager>();
 builder.Services.AddScoped<IImageManager, ImageManager>();

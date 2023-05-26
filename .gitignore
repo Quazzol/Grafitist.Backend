@@ -61,6 +61,4 @@ obj/Debug/net7.0/staticwebassets/msbuild.buildTransitive.Grafitist.Backend.props
 appsettings.Development.json
 Misc/AesEncryption.cs
 Misc/TokenProvider.cs
-Migrations/20230522105641_firstMigration.cs
-Migrations/20230522105641_firstMigration.Designer.cs
-Migrations/AppDbContextModelSnapshot.cs
+Migrations/

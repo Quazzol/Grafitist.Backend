@@ -1,5 +1,6 @@
 using Grafitist.Models.Campaign;
 using Grafitist.Models.Cart;
+using Grafitist.Models.CompanyInfo;
 using Grafitist.Models.Order;
 using Grafitist.Models.Payment;
 using Grafitist.Models.Product;
@@ -18,6 +19,8 @@ public class AppDbContext : DbContext
 
     public DbSet<CartModel>? Carts { get; set; }
     public DbSet<CartLineModel>? CartLines { get; set; }
+
+    public DbSet<CompanyInfoModel>? CompanyInfos { get; set; }
 
     public DbSet<OrderModel>? Orders { get; set; }
     public DbSet<OrderLineModel>? OrderLines { get; set; }
@@ -47,6 +50,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<CityModel>().HasData(CreateCityModels());
         modelBuilder.Entity<DistrictModel>().HasData(CreateDistrictModels());
         modelBuilder.Entity<UserModel>().HasData(CreateAdminUser());
+        modelBuilder.Entity<CompanyInfoModel>().HasData(CreateCompanyInfo());
     }
 
     #region AdminUser
@@ -1150,4 +1154,22 @@ public class AppDbContext : DbContext
         };
     }
     #endregion
+
+    #region CompanyInfo
+
+    public CompanyInfoModel CreateCompanyInfo()
+    {
+        return new CompanyInfoModel
+        {
+            Id = 1,
+            AboutUs = "Grafitist satış kanalı",
+            Address = "Kocamustafapaşa civarı",
+            Email = "grafitist@gmail.com",
+            Phone = "0 555 555 55 55",
+            GoogleMapLink = "map.google.com"
+        };
+    }
+
+    #endregion
+
 }
