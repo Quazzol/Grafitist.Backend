@@ -62,10 +62,11 @@ public class CartService : ICartService
             return new OrderLineInsertDTO
             {
                 OrderId = orderId,
-                Amount = cartLine.Amount,
+                Quantity = cartLine.ProductId,
+                Price = cartLine.Price,
+                DiscountedPrice = cartLine.DiscountedPrice,
                 CampaignId = cartLine.CampaignId,
-                ProductId = cartLine.ProductId,
-                Quantity = cartLine.ProductId
+                ProductId = cartLine.ProductId
             };
         }
     }
@@ -127,7 +128,7 @@ public class CartService : ICartService
 
     private async Task CalculateAmounts(CartDTO cart)
     {
-        await _priceManager.CalculateDiscountedPrices(cart.Lines);
+        await _priceManager.SetDiscountedPrice(cart.Lines);
         if (cart.Lines is not null)
         {
             cart.Amount = await _priceManager.CalculateTotalDiscountedPrice(cart.Lines.Sum(q => q.Amount * q.Quantity));

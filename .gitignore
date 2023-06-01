@@ -62,3 +62,4 @@ appsettings.Development.json
 Misc/AesEncryption.cs
 Misc/TokenProvider.cs
 Migrations/
+.vscode

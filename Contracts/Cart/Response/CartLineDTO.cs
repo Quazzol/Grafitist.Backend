@@ -9,7 +9,9 @@ public class CartLineDTO : ITransactionLine
     public int ProductId { get; set; }
     public ProductDTO? Product { get; set; }
     public int Quantity { get; set; }
-    public double Amount { get; set; }
+    public double Price { get; set; }
+    public double DiscountedPrice { get; set; } = int.MaxValue;
+    public double Amount => Quantity * DiscountedPrice;
     public Guid CampaignId { get; set; }
     public Guid CartId { get; set; }
 }

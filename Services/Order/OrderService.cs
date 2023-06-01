@@ -70,7 +70,7 @@ public class OrderService : IOrderService
 
     private async Task CalculateAmounts(OrderDTO order)
     {
-        await _priceManager.CalculateDiscountedPrices(order.Lines);
+        await _priceManager.SetDiscountedPrice(order.Lines);
         if (order.Lines is not null)
         {
             order.Amount = await _priceManager.CalculateTotalDiscountedPrice(order.Lines.Sum(q => q.Amount * q.Quantity));

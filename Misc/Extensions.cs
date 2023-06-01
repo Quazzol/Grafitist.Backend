@@ -80,4 +80,9 @@ public static class Extensions
     {
         return guid is null || guid == Guid.Empty;
     }
+
+    public static bool IsEmpty(this double value)
+    {
+        return Math.Abs(value) <= double.Epsilon;
+    }
 }

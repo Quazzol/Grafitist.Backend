@@ -17,7 +17,7 @@ public class PriceManager : IPriceManager
         _productRepository = productRepository;
     }
 
-    public async Task CalculateDiscountedPrice(ITransactionLine transactionLine)
+    public async Task SetDiscountedPrice(ITransactionLine transactionLine)
     {
         if (transactionLine is null)
             return;
@@ -27,19 +27,30 @@ public class PriceManager : IPriceManager
             return;
 
         var campaigns = await _campaignRepository.Get(new Pager { No = 1, Count = 100, OnlyActive = true });
-        SetAmount(transactionLine, product.Price, Guid.Empty);
+        SetDiscountedPrice(transactionLine, product.Price);
+        SetCampaign(transactionLine, Guid.Empty);
 
         foreach (var campaign in campaigns)
         {
-            if (campaign.Type == Enums.CampaignType.Cart || campaign.Type == Enums.CampaignType.FreeShipping)
-                continue;
-            SetAmount(transactionLine, FindDiscountedPrice(campaign, CampaignType.Category, product.Item!.CategoryId, product.Price), campaign.Id);
-            SetAmount(transactionLine, FindDiscountedPrice(campaign, CampaignType.Item, product.ItemId, product.Price), campaign.Id);
-            SetAmount(transactionLine, FindDiscountedPrice(campaign, CampaignType.Product, product.Id, product.Price), campaign.Id);
+            if (campaign.Type == CampaignType.Category)
+            {
+                SetDiscountedPrice(transactionLine, GetDiscountedPrice(campaign, CampaignType.Category, product.Item!.CategoryId, product.Price));
+                SetCampaign(transactionLine, campaign.Id);
+            }
+            else if (campaign.Type == CampaignType.Item)
+            {
+                SetDiscountedPrice(transactionLine, GetDiscountedPrice(campaign, CampaignType.Item, product.ItemId, product.Price));
+                SetCampaign(transactionLine, campaign.Id);
+            }
+            else if (campaign.Type == CampaignType.Product)
+            {
+                SetDiscountedPrice(transactionLine, GetDiscountedPrice(campaign, CampaignType.Product, product.Id, product.Price));
+                SetCampaign(transactionLine, campaign.Id);
+            }
         }
     }
 
-    public async Task CalculateDiscountedPrices(IEnumerable<ITransactionLine>? transactionLines)
+    public async Task SetDiscountedPrice(IEnumerable<ITransactionLine>? transactionLines)
     {
         if (transactionLines is null)
             return;
@@ -49,15 +60,87 @@ public class PriceManager : IPriceManager
 
         foreach (var product in products)
         {
-            SetAmount(transactionLines.Where(q => q.ProductId == product.Id), product.Price, Guid.Empty);
+            var filteredLines = transactionLines.Where(q => q.ProductId == product.Id).ToList();
+            SetDiscountedPrice(filteredLines, product.Price);
+            SetCampaign(filteredLines, Guid.Empty);
+
             foreach (var campaign in campaigns)
             {
-                if (campaign.Type == Enums.CampaignType.Cart || campaign.Type == Enums.CampaignType.FreeShipping)
-                    continue;
+                if (campaign.Type == CampaignType.Category)
+                {
+                    SetDiscountedPrice(filteredLines, GetDiscountedPrice(campaign, CampaignType.Category, product.Item!.CategoryId, product.Price));
+                    SetCampaign(filteredLines, campaign.Id);
+                }
+                else if (campaign.Type == CampaignType.Item)
+                {
+                    SetDiscountedPrice(filteredLines, GetDiscountedPrice(campaign, CampaignType.Item, product.ItemId, product.Price));
+                    SetCampaign(filteredLines, campaign.Id);
+                }
+                else if (campaign.Type == CampaignType.Product)
+                {
+                    SetDiscountedPrice(filteredLines, GetDiscountedPrice(campaign, CampaignType.Product, product.Id, product.Price));
+                    SetCampaign(filteredLines, campaign.Id);
+                }
+            }
+        }
+    }
 
-                SetAmount(transactionLines.Where(q => q.ProductId == product.Id), FindDiscountedPrice(campaign, CampaignType.Category, product.Item!.CategoryId, product.Price), campaign.Id);
-                SetAmount(transactionLines.Where(q => q.ProductId == product.Id), FindDiscountedPrice(campaign, CampaignType.Item, product.ItemId, product.Price), campaign.Id);
-                SetAmount(transactionLines.Where(q => q.ProductId == product.Id), FindDiscountedPrice(campaign, CampaignType.Product, product.Id, product.Price), campaign.Id);
+    public async Task SetDiscountedPrice(IProduct product)
+    {
+        if (product is null)
+            return;
+
+        var loadedProduct = await _productRepository.Get(product.ProductId);
+        if (loadedProduct is null)
+            return;
+
+        var campaigns = await _campaignRepository.Get(new Pager { No = 1, Count = 100, OnlyActive = true });
+        SetDiscountedPrice(product, loadedProduct.Price);
+
+        foreach (var campaign in campaigns)
+        {
+            if (campaign.Type == CampaignType.Category)
+            {
+                SetDiscountedPrice(product, GetDiscountedPrice(campaign, CampaignType.Category, loadedProduct.Item!.CategoryId, product.Price));
+            }
+            else if (campaign.Type == CampaignType.Item)
+            {
+                SetDiscountedPrice(product, GetDiscountedPrice(campaign, CampaignType.Item, loadedProduct.ItemId, product.Price));
+            }
+            else if (campaign.Type == CampaignType.Product)
+            {
+                SetDiscountedPrice(product, GetDiscountedPrice(campaign, CampaignType.Product, loadedProduct.Id, product.Price));
+            }
+        }
+    }
+
+    public async Task SetDiscountedPrice(IEnumerable<IProduct>? products)
+    {
+        if (products is null)
+            return;
+
+        var loadedProducts = await _productRepository.Get(products.Select(q => q.ProductId).Distinct());
+        var campaigns = await _campaignRepository.Get(new Pager { No = 1, Count = 100, OnlyActive = true });
+
+        foreach (var product in loadedProducts)
+        {
+            var filteredLines = products.Where(q => q.ProductId == product.Id).ToList();
+            SetDiscountedPrice(filteredLines, product.Price);
+
+            foreach (var campaign in campaigns)
+            {
+                if (campaign.Type == CampaignType.Category)
+                {
+                    SetDiscountedPrice(filteredLines, GetDiscountedPrice(campaign, CampaignType.Category, product.Item!.CategoryId, product.Price));
+                }
+                else if (campaign.Type == CampaignType.Item)
+                {
+                    SetDiscountedPrice(filteredLines, GetDiscountedPrice(campaign, CampaignType.Item, product.ItemId, product.Price));
+                }
+                else if (campaign.Type == CampaignType.Product)
+                {
+                    SetDiscountedPrice(filteredLines, GetDiscountedPrice(campaign, CampaignType.Product, product.Id, product.Price));
+                }
             }
         }
     }
@@ -67,30 +150,42 @@ public class PriceManager : IPriceManager
         var campaigns = (await _campaignRepository.Get(CampaignType.Cart)).Where(q => q.MinimumPrice <= totalAmount);
         if (campaigns is null)
             return totalAmount;
-        return (100 - campaigns.Max(q => q.Percent)) * totalAmount;
+        return (100 - campaigns.Max(q => q.Percent)) * totalAmount / 100;
     }
 
-    private void SetAmount(ITransactionLine transactionLine, double discountedPrice, Guid campaignId)
+    private void SetDiscountedPrice(IProduct product, double discountedPrice)
     {
-        if (transactionLine.Amount < discountedPrice)
+        if (product.DiscountedPrice < discountedPrice)
             return;
-        transactionLine.Amount = discountedPrice;
-        transactionLine.CampaignId = campaignId;
+        product.DiscountedPrice = discountedPrice;
     }
 
-    private void SetAmount(IEnumerable<ITransactionLine> transactionLines, double discountedPrice, Guid campaignId)
+    private void SetDiscountedPrice(IEnumerable<IProduct> products, double discountedPrice)
     {
-        foreach (var amount in transactionLines)
+        foreach (var product in products)
         {
-            SetAmount(amount, discountedPrice, campaignId);
+            SetDiscountedPrice(product, discountedPrice);
         }
     }
 
-    private double FindDiscountedPrice(CampaignModel campaign, CampaignType type, int typeId, double price)
+    private void SetCampaign(ITransactionLine transactionLine, Guid campaignId)
+    {
+        transactionLine.CampaignId = campaignId;
+    }
+
+    private void SetCampaign(IEnumerable<ITransactionLine> transactionLines, Guid campaignId)
+    {
+        foreach (var line in transactionLines)
+        {
+            SetCampaign(line, campaignId);
+        }
+    }
+
+    private double GetDiscountedPrice(CampaignModel campaign, CampaignType type, int typeId, double price)
     {
         if (campaign.Type == type && campaign.CampaignTypeId == typeId && campaign.MinimumPrice <= price)
         {
-            var calculatedPrice = (100 - campaign.Percent) * price;
+            var calculatedPrice = (100 - campaign.Percent) * price / 100;
             if (calculatedPrice < price)
                 return calculatedPrice;
         }

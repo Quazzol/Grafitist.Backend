@@ -23,23 +23,36 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet()]
-    public async Task<IActionResult> Get(int pageNo, int productCount, bool onlyActive = true, int? categoryId = null, int? materialId = null, int? colorId = null, int? variantId = null, double startPrice = 0, double endPrice = double.MaxValue)
+    public async Task<IActionResult> Get(int pageNo, int count, bool onlyActive = true, [FromQuery] int[]? categoryId = null, [FromQuery] int[]? materialId = null, [FromQuery] int?[]? colorId = null, [FromQuery] int?[]? variantId = null, [FromQuery] double startPrice = 0, [FromQuery] double endPrice = 0)
     {
         return Ok(await _service.Get(
             new Pager
             {
                 No = pageNo,
-                Count = productCount,
+                Count = count,
                 OnlyActive = onlyActive
             },
             new ProductFilter
             {
-                CategoryId = categoryId,
-                MaterialId = materialId,
-                ColorId = colorId,
-                VariantId = variantId,
-                Price = new DoubleRange(startPrice, endPrice)
+                CategoryId = categoryId == null || categoryId.Length == 0 ? null : new List<int>(categoryId),
+                MaterialId = materialId == null || materialId.Length == 0 ? null : new List<int>(materialId),
+                ColorId = colorId == null || colorId.Length == 0 ? null : new List<int?>(colorId),
+                VariantId = variantId == null || variantId.Length == 0 ? null : new List<int?>(variantId),
+                Price = startPrice.IsEmpty() && endPrice.IsEmpty() ? null : new DoubleRange(startPrice, endPrice)
             }));
+    }
+
+    [HttpGet("count")]
+    public async Task<IActionResult> Count([FromQuery] int[]? categoryId = null, [FromQuery] int[]? materialId = null, [FromQuery] int?[]? colorId = null, [FromQuery] int?[]? variantId = null, [FromQuery] double startPrice = 0, [FromQuery] double endPrice = 0)
+    {
+        return Ok(await _service.Get(new ProductFilter
+        {
+            CategoryId = categoryId == null || categoryId.Length == 0 ? null : new List<int>(categoryId),
+            MaterialId = materialId == null || materialId.Length == 0 ? null : new List<int>(materialId),
+            ColorId = colorId == null || colorId.Length == 0 ? null : new List<int?>(colorId),
+            VariantId = variantId == null || variantId.Length == 0 ? null : new List<int?>(variantId),
+            Price = startPrice.IsEmpty() && endPrice.IsEmpty() ? null : new DoubleRange(startPrice, endPrice)
+        }));
     }
 
     [HttpPost()]

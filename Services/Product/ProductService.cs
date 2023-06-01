@@ -2,6 +2,7 @@ using AutoMapper;
 using Grafitist.Contracts.Product.Request;
 using Grafitist.Contracts.Product.Response;
 using Grafitist.Misc;
+using Grafitist.Misc.Interfaces;
 using Grafitist.Models.Product;
 using Grafitist.Repositories.Product.Interfaces;
 using Grafitist.Services.Product.Interfaces;
@@ -12,11 +13,13 @@ public class ProductService : IProductService
 {
     private readonly IProductRepository _repository;
     private readonly IMapper _mapper;
+    private readonly IPriceManager _priceManager;
 
-    public ProductService(IProductRepository repository, IMapper mapper)
+    public ProductService(IProductRepository repository, IMapper mapper, IPriceManager priceManager)
     {
         _repository = repository;
         _mapper = mapper;
+        _priceManager = priceManager;
     }
 
     public async Task Deactivate(int id)
@@ -35,12 +38,21 @@ public class ProductService : IProductService
 
     public async Task<ProductDTO?> Get(int id)
     {
-        return _mapper.Map<ProductDTO>(await _repository.Get(id));
+        var product = _mapper.Map<ProductDTO>(await _repository.Get(id));
+        await _priceManager.SetDiscountedPrice(product);
+        return product;
     }
 
     public async Task<IEnumerable<ProductDTO>> Get(Pager? pager, ProductFilter? filter)
     {
-        return _mapper.Map<IEnumerable<ProductDTO>>(await _repository.Get(pager, filter));
+        var products = _mapper.Map<IEnumerable<ProductDTO>>(await _repository.Get(pager, filter));
+        await _priceManager.SetDiscountedPrice(products);
+        return products;
+    }
+
+    public async Task<int> Get(ProductFilter? filter)
+    {
+        return await _repository.Get(filter);
     }
 
     public async Task<ProductDTO> Insert(ProductInsertDTO dto)

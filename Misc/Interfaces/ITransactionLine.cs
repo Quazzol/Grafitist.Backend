@@ -1,9 +1,8 @@
 namespace Grafitist.Misc.Interfaces;
 
-public interface ITransactionLine
+public interface ITransactionLine : IProduct
 {
-    public double Amount { get; set; }
     public int Quantity { get; set; }
-    public int ProductId { get; set; }
+    public double Amount { get; }
     public Guid CampaignId { get; set; }
 }

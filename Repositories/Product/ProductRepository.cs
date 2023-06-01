@@ -51,10 +51,10 @@ public class ProductRepository : IProductRepository
                             .Include(q => q.Images)
                             .OrderBy(q => q.Id)
                             .Where(q => (!pager.OnlyActive || q.IsActive)
-                                        && (filter.CategoryId == null || filter.CategoryId == q.Item!.CategoryId)
-                                        && (filter.MaterialId == null || filter.MaterialId == q.Item!.MaterialId)
-                                        && (filter.ColorId == null || filter.ColorId == q.ColorId)
-                                        && (filter.VariantId == null || filter.VariantId == q.VariantId)
+                                        && (filter.CategoryId == null || filter.CategoryId.Contains(q.Item!.CategoryId))
+                                        && (filter.MaterialId == null || filter.MaterialId.Contains(q.Item!.MaterialId))
+                                        && (filter.ColorId == null || filter.ColorId.Contains(q.ColorId))
+                                        && (filter.VariantId == null || filter.VariantId.Contains(q.VariantId))
                                         && (filter.Price == null || (filter.Price.Value.Start <= q.Price && filter.Price.Value.End >= q.Price)))
                             .Skip(pager.Count * (pager.No - 1))
                             .Take(pager.Count)
@@ -64,6 +64,18 @@ public class ProductRepository : IProductRepository
     public async Task<IEnumerable<ProductModel>> Get(IEnumerable<int> productIds)
     {
         return await _context.Products!.Where(q => productIds.Contains(q.Id)).ToListAsync();
+    }
+
+    public async Task<int> Get(ProductFilter? filter)
+    {
+        filter = filter ?? new ProductFilter();
+        return await _context.Products!
+                    .Where(q => (filter.CategoryId == null || filter.CategoryId.Contains(q.Item!.CategoryId))
+                                    && (filter.MaterialId == null || filter.MaterialId.Contains(q.Item!.MaterialId))
+                                    && (filter.ColorId == null || filter.ColorId.Contains(q.ColorId))
+                                    && (filter.VariantId == null || filter.VariantId.Contains(q.VariantId))
+                                    && (filter.Price == null || (filter.Price.Value.Start <= q.Price && filter.Price.Value.End >= q.Price)))
+                    .CountAsync();
     }
 
     public async Task<ProductModel> Insert(ProductModel model)

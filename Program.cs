@@ -91,7 +91,6 @@ builder.Services.AddScoped<ICompanyInfoService, CompanyInfoService>();
 
 builder.Services.AddScoped<IPriceManager, PriceManager>();
 builder.Services.AddScoped<IImageManager, ImageManager>();
-builder.Services.AddScoped<IPriceManager, PriceManager>();
 builder.Services.AddScoped<IUserContext, UserContext>();
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 builder.Services.AddAutoMapper(typeof(Program));

@@ -8,6 +8,7 @@ public interface IProductService
 {
     public Task<ProductDTO?> Get(int id);
     public Task<IEnumerable<ProductDTO>> Get(Pager? pager, ProductFilter? filter);
+    public Task<int> Get(ProductFilter? filter);
     public Task<ProductDTO> Insert(ProductInsertDTO dto);
     public Task<ProductDTO> Update(ProductUpdateDTO dto);
     public Task Delete(int id);
