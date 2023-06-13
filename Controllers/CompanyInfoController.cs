@@ -1,8 +1,10 @@
+using Grafitist.Authorization;
 using Grafitist.Contracts.CompanyInfo.Request;
 using Grafitist.Services.CompanyInfo.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Grafitist.ProductService.Controllers;
+namespace Grafitist.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
@@ -22,6 +24,7 @@ public class CompanyInfoController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Policy = Policies.Admin)]
     public async Task<IActionResult> Update(CompanyInfoUpdateDTO dto)
     {
         if (!TryValidateModel(dto))

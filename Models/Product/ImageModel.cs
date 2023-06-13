@@ -7,8 +7,10 @@ namespace Grafitist.Models.Product;
 public class ImageModel
 {
     [Key] public int Id { get; set; }
-    public string? Name { get; set; }
     public bool IsCover { get; set; }
     public bool IsActive { get; set; }
-    public int ProductId { get; set; }
+    public string? Type { get; set; }
+    public byte[]? Data { get; set; }
+    [ForeignKey("Product")]
+    public int ProductModelId { get; set; }
 }

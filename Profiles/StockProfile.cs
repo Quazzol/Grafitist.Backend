@@ -11,7 +11,6 @@ public class StockProfile : Profile
     {
         // Source -> Target
         CreateMap<StockModel, StockDTO>();
-        CreateMap<StockInsertDTO, StockModel>();
-        CreateMap<StockUpdateDTO, StockModel>();
+        CreateMap<StockQuantityDTO, StockModel>();
     }
 }

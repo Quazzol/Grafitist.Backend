@@ -71,6 +71,25 @@ public static class Extensions
         return str.ToLower().Trim().Replace(' ', '_');
     }
 
+    public static string Linkify(this string? str)
+    {
+        if (str is null)
+            return string.Empty;
+
+        foreach (var kvp in _toBeReplaced)
+        {
+            str = str.Replace(kvp.Key, kvp.Value);
+        }
+
+        // Leave only alpha numeric, white space and dash characters
+        char[] arr = str.Where(c => (char.IsLetterOrDigit(c) ||
+                             char.IsWhiteSpace(c) ||
+                             c == '-')).ToArray();
+
+        str = new string(arr);
+        return str.ToLower().Trim().Replace(' ', '-');
+    }
+
     public static bool IsEmpty(this string? str)
     {
         return string.IsNullOrWhiteSpace(str);
@@ -84,5 +103,15 @@ public static class Extensions
     public static bool IsEmpty(this double value)
     {
         return Math.Abs(value) <= double.Epsilon;
+    }
+
+    public static int ZeroIfNegative(this int value)
+    {
+        return value < 0 ? 0 : value;
+    }
+
+    public static double ZeroIfNegative(this double value)
+    {
+        return value < 0 ? 0 : value;
     }
 }

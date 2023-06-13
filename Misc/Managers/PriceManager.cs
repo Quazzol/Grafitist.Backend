@@ -34,12 +34,7 @@ public class PriceManager : IPriceManager
         {
             if (campaign.Type == CampaignType.Category)
             {
-                SetDiscountedPrice(transactionLine, GetDiscountedPrice(campaign, CampaignType.Category, product.Item!.CategoryId, product.Price));
-                SetCampaign(transactionLine, campaign.Id);
-            }
-            else if (campaign.Type == CampaignType.Item)
-            {
-                SetDiscountedPrice(transactionLine, GetDiscountedPrice(campaign, CampaignType.Item, product.ItemId, product.Price));
+                SetDiscountedPrice(transactionLine, GetDiscountedPrice(campaign, CampaignType.Category, product.CategoryId, product.Price));
                 SetCampaign(transactionLine, campaign.Id);
             }
             else if (campaign.Type == CampaignType.Product)
@@ -68,12 +63,7 @@ public class PriceManager : IPriceManager
             {
                 if (campaign.Type == CampaignType.Category)
                 {
-                    SetDiscountedPrice(filteredLines, GetDiscountedPrice(campaign, CampaignType.Category, product.Item!.CategoryId, product.Price));
-                    SetCampaign(filteredLines, campaign.Id);
-                }
-                else if (campaign.Type == CampaignType.Item)
-                {
-                    SetDiscountedPrice(filteredLines, GetDiscountedPrice(campaign, CampaignType.Item, product.ItemId, product.Price));
+                    SetDiscountedPrice(filteredLines, GetDiscountedPrice(campaign, CampaignType.Category, product.CategoryId, product.Price));
                     SetCampaign(filteredLines, campaign.Id);
                 }
                 else if (campaign.Type == CampaignType.Product)
@@ -101,11 +91,7 @@ public class PriceManager : IPriceManager
         {
             if (campaign.Type == CampaignType.Category)
             {
-                SetDiscountedPrice(product, GetDiscountedPrice(campaign, CampaignType.Category, loadedProduct.Item!.CategoryId, product.Price));
-            }
-            else if (campaign.Type == CampaignType.Item)
-            {
-                SetDiscountedPrice(product, GetDiscountedPrice(campaign, CampaignType.Item, loadedProduct.ItemId, product.Price));
+                SetDiscountedPrice(product, GetDiscountedPrice(campaign, CampaignType.Category, loadedProduct.CategoryId, product.Price));
             }
             else if (campaign.Type == CampaignType.Product)
             {
@@ -131,11 +117,7 @@ public class PriceManager : IPriceManager
             {
                 if (campaign.Type == CampaignType.Category)
                 {
-                    SetDiscountedPrice(filteredLines, GetDiscountedPrice(campaign, CampaignType.Category, product.Item!.CategoryId, product.Price));
-                }
-                else if (campaign.Type == CampaignType.Item)
-                {
-                    SetDiscountedPrice(filteredLines, GetDiscountedPrice(campaign, CampaignType.Item, product.ItemId, product.Price));
+                    SetDiscountedPrice(filteredLines, GetDiscountedPrice(campaign, CampaignType.Category, product.CategoryId, product.Price));
                 }
                 else if (campaign.Type == CampaignType.Product)
                 {

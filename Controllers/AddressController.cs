@@ -1,8 +1,10 @@
+using Grafitist.Authorization;
 using Grafitist.Contracts.User.Request;
 using Grafitist.Services.User.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Grafitist.ProductService.Controllers;
+namespace Grafitist.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
@@ -16,18 +18,27 @@ public class AddressController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize(Policy = Policies.HasLoggedIn)]
     public async Task<IActionResult> Get(int id)
     {
-        return Ok(await _service.Get(id));
+        var response = await _service.Get(id);
+        if (response is null)
+            return NoContent();
+        return Ok(response);
     }
 
     [HttpGet("get-by-user/{userId:Guid}")]
+    [Authorize(Policy = Policies.HasLoggedIn)]
     public async Task<IActionResult> Get(Guid userId)
     {
-        return Ok(await _service.Get(userId));
+        var response = await _service.Get(userId);
+        if (response is null)
+            return NoContent();
+        return Ok(response);
     }
 
     [HttpPost()]
+    [Authorize(Policy = Policies.User)]
     public async Task<IActionResult> Insert(AddressInsertDTO dto)
     {
         if (!TryValidateModel(dto))
@@ -36,6 +47,7 @@ public class AddressController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Policy = Policies.User)]
     public async Task<IActionResult> Update(AddressUpdateDTO dto)
     {
         if (!TryValidateModel(dto))
@@ -44,6 +56,7 @@ public class AddressController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Policy = Policies.User)]
     public async Task Delete(int id)
     {
         await _service.Delete(id);

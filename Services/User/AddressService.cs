@@ -20,6 +20,7 @@ public class AddressService : IAddressService
         _mapper = mapper;
         _userContext = userContext;
     }
+
     public async Task Delete(int id)
     {
         await _repository.Delete(id);
@@ -27,6 +28,10 @@ public class AddressService : IAddressService
 
     public async Task<IEnumerable<AddressDTO?>> Get(Guid userId)
     {
+        if (_userContext.CurrentUser is null)
+            throw new Exception("Not logged in");
+        if (_userContext.CurrentUser.Id != userId)
+            throw new ArgumentException("Cannot update another user");
         return _mapper.Map<IEnumerable<AddressDTO>>(await _repository.Get(userId));
     }
 
@@ -37,11 +42,19 @@ public class AddressService : IAddressService
 
     public async Task<AddressDTO> Insert(AddressInsertDTO dto)
     {
+        if (_userContext.CurrentUser is null)
+            throw new Exception("Not logged in");
+        if (_userContext.CurrentUser.Id != dto.UserId)
+            throw new ArgumentException("Cannot update another user");
         return _mapper.Map<AddressDTO>(await _repository.Insert(_mapper.Map<AddressModel>(dto)));
     }
 
     public async Task<AddressDTO> Update(AddressUpdateDTO dto)
     {
+        if (_userContext.CurrentUser is null)
+            throw new Exception("Not logged in");
+        if (_userContext.CurrentUser.Id != dto.UserId)
+            throw new ArgumentException("Cannot update another user");
         return _mapper.Map<AddressDTO>(await _repository.Update(_mapper.Map<AddressModel>(dto)));
     }
 }

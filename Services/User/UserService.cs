@@ -31,6 +31,10 @@ public class UserService : IUserService
 
     public async Task<UserDTO?> Get(Guid id)
     {
+        if (_userContext.CurrentUser is null)
+            throw new Exception("Not logged in");
+        if (_userContext.CurrentUser.Type != Misc.Enums.UserType.Admin && _userContext.CurrentUser.Id != id)
+            throw new ArgumentException("Cannot get another user's information");
         return _mapper.Map<UserDTO>(await _repository.Get(id));
     }
 
@@ -41,6 +45,9 @@ public class UserService : IUserService
 
     public async Task<UserDTO> Insert(UserInsertDTO dto)
     {
+        if (dto.Type != Misc.Enums.UserType.User && (_userContext.CurrentUser is null || _userContext.CurrentUser!.Type != Misc.Enums.UserType.Admin))
+            throw new Exception("No admin priviliges");
+
         return _mapper.Map<UserDTO>(await _repository.Insert(_mapper.Map<UserModel>(dto)));
     }
 
@@ -55,6 +62,8 @@ public class UserService : IUserService
 
     public async Task<UserDTO> Update(UserUpdateDTO dto)
     {
+        if (_userContext.CurrentUser is null || _userContext.CurrentUser.Id != dto.Id)
+            throw new ArgumentException("Cannot update another user!");
         return _mapper.Map<UserDTO>(await _repository.Update(_mapper.Map<UserModel>(dto)));
     }
 }

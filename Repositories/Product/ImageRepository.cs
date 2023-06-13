@@ -31,13 +31,12 @@ public class ImageRepository : IImageRepository
 
     public async Task<IEnumerable<ImageModel>> GetByProduct(int productId)
     {
-        return await _context.Images!.Where(q => q.ProductId == productId).OrderBy(q => q.Id).ToListAsync();
+        return await _context.Images!.Where(q => q.ProductModelId == productId).OrderBy(q => q.Id).ToListAsync();
     }
 
-    public async Task<ImageModel> Insert(ImageModel model, string name)
+    public async Task<ImageModel> Insert(ImageModel model)
     {
         if (model is null) throw new ArgumentNullException(nameof(ImageModel));
-        model.Name = name;
         await _context.Images!.AddAsync(model);
         await _context.SaveChangesAsync();
         return model;
@@ -49,7 +48,6 @@ public class ImageRepository : IImageRepository
         var image = await _context.Images!.FirstOrDefaultAsync(q => q.Id == model.Id);
         if (image is null) throw new KeyNotFoundException($"Model.Id not found! {model.Id}");
 
-        image.Name = model.Name;
         image.IsCover = model.IsCover;
         image.IsActive = model.IsActive;
         await _context.SaveChangesAsync();

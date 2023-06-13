@@ -28,12 +28,12 @@ public class ProductRepository : IProductRepository
     public async Task<ProductModel?> Get(int id)
     {
         return await _context.Products!
-                    .Include(q => q.Item)
-                    .Include(q => q.Item!.Category)
-                    .Include(q => q.Item!.Material)
+                    .Include(q => q.Category)
+                    .Include(q => q.Material)
                     .Include(q => q.Color)
                     .Include(q => q.Variant)
                     .Include(q => q.Images)
+                    .Include(q => q.Stock)
                     .FirstOrDefaultAsync(q => q.Id == id);
     }
 
@@ -43,16 +43,16 @@ public class ProductRepository : IProductRepository
         filter = filter ?? new ProductFilter();
 
         return await _context.Products!
-                            .Include(q => q.Item)
-                            .Include(q => q.Item!.Category)
-                            .Include(q => q.Item!.Material)
+                            .Include(q => q.Category)
+                            .Include(q => q.Material)
                             .Include(q => q.Color)
                             .Include(q => q.Variant)
                             .Include(q => q.Images)
+                            .Include(q => q.Stock)
                             .OrderBy(q => q.Id)
                             .Where(q => (!pager.OnlyActive || q.IsActive)
-                                        && (filter.CategoryId == null || filter.CategoryId.Contains(q.Item!.CategoryId))
-                                        && (filter.MaterialId == null || filter.MaterialId.Contains(q.Item!.MaterialId))
+                                        && (filter.CategoryId == null || filter.CategoryId.Contains(q.CategoryId))
+                                        && (filter.MaterialId == null || filter.MaterialId.Contains(q.MaterialId))
                                         && (filter.ColorId == null || filter.ColorId.Contains(q.ColorId))
                                         && (filter.VariantId == null || filter.VariantId.Contains(q.VariantId))
                                         && (filter.Price == null || (filter.Price.Value.Start <= q.Price && filter.Price.Value.End >= q.Price)))
@@ -70,8 +70,8 @@ public class ProductRepository : IProductRepository
     {
         filter = filter ?? new ProductFilter();
         return await _context.Products!
-                    .Where(q => (filter.CategoryId == null || filter.CategoryId.Contains(q.Item!.CategoryId))
-                                    && (filter.MaterialId == null || filter.MaterialId.Contains(q.Item!.MaterialId))
+                    .Where(q => (filter.CategoryId == null || filter.CategoryId.Contains(q.CategoryId))
+                                    && (filter.MaterialId == null || filter.MaterialId.Contains(q.MaterialId))
                                     && (filter.ColorId == null || filter.ColorId.Contains(q.ColorId))
                                     && (filter.VariantId == null || filter.VariantId.Contains(q.VariantId))
                                     && (filter.Price == null || (filter.Price.Value.Start <= q.Price && filter.Price.Value.End >= q.Price)))
@@ -92,11 +92,14 @@ public class ProductRepository : IProductRepository
         var product = await _context.Products!.FirstOrDefaultAsync(q => q.Id == model.Id);
         if (product is null) throw new KeyNotFoundException($"Model.Id not found! {model.Id}");
 
+        product.Code = model.Code;
         product.Description = model.Description;
+        product.Notes = model.Notes;
         product.ColorId = model.ColorId;
         product.VariantId = model.VariantId;
         product.IsActive = model.IsActive;
-        product.ItemId = model.ItemId;
+        product.CategoryId = model.CategoryId;
+        product.MaterialId = model.MaterialId;
         product.Price = model.Price;
         await _context.SaveChangesAsync();
         return product;

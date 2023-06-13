@@ -6,6 +6,6 @@ public class ImageInsertDTO
 {
     public bool IsCover { get; set; }
     public bool IsActive { get; set; } = true;
-    public int ProductId { get; set; }
+    public int ProductModelId { get; set; }
     [Required] public IFormFile? Image { get; set; }
 }

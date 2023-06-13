@@ -4,9 +4,9 @@ namespace Grafitist.Misc;
 
 public static class Utils
 {
-    public static string Linkify(ItemDTO? item, ColorDTO? color, VariantDTO? variant)
+    public static string Linkify(string? productDescription, ColorDTO? color, VariantDTO? variant)
     {
-        var link = string.Format("{0}-{1}-{2}", item?.Description, color?.Description, variant?.Description);
-        return Uri.EscapeDataString(link.Replace(' ', '-'));
+        var link = string.Format("{0}-{1}-{2}", productDescription, color?.Description, variant?.Description);
+        return link.Linkify();
     }
 }

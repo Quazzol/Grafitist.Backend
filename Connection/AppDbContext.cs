@@ -27,7 +27,6 @@ public class AppDbContext : DbContext
 
     public DbSet<PaymentModel>? Payments { get; set; }
 
-    public DbSet<ItemModel>? Items { get; set; }
     public DbSet<ColorModel>? Colors { get; set; }
     public DbSet<VariantModel>? Variants { get; set; }
     public DbSet<MaterialModel>? Materials { get; set; }

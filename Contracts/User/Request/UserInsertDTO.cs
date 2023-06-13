@@ -5,7 +5,7 @@ namespace Grafitist.Contracts.User.Request;
 
 public class UserInsertDTO
 {
-    [Required] public UserType Type { get; set; }
+    [Required] public UserType Type { get; set; } = UserType.User;
     public string? Name { get; set; }
     public string? Surname { get; set; }
     [Required] public string? Email { get; set; }

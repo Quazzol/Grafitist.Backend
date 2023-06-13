@@ -1,5 +1,7 @@
+using Grafitist.Authorization;
 using Grafitist.Contracts.Stock.Request;
 using Grafitist.Services.Stock.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Grafitist.Controllers;
@@ -16,20 +18,25 @@ public class StockController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
+    [Authorize(Policy = Policies.Admin)]
     public async Task<IActionResult> Get(int productId)
     {
         return Ok(await _service.Get(productId));
     }
 
     [HttpGet("multiple")]
+    [Authorize(Policy = Policies.Admin)]
     public async Task<IActionResult> Get([FromQuery] int[] productId)
     {
         return Ok(await _service.Get(productId));
     }
 
     [HttpPost()]
-    public async Task<IActionResult> Save(StockUpdateDTO dto)
+    [Authorize(Policy = Policies.Admin)]
+    public async Task<IActionResult> Save(StockQuantityDTO dto)
     {
-        return Ok(await _service.Save(dto));
+        if (!TryValidateModel(dto))
+            return ValidationProblem(ModelState);
+        return Ok(await _service.AddStock(dto));
     }
 }

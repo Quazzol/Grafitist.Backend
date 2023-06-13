@@ -4,8 +4,11 @@ namespace Grafitist.Contracts.Product.Request;
 
 public class ProductInsertDTO
 {
+    [Required] public string? Code { get; set; }
     public string? Description { get; set; }
-    [Required] public int ItemId { get; set; }
+    public string? Notes { get; set; }
+    [Required] public int CategoryId { get; set; }
+    [Required] public int MaterialId { get; set; }
     public int? ColorId { get; set; }
     public int? VariantId { get; set; }
     public double Price { get; set; }

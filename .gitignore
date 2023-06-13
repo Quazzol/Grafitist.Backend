@@ -63,3 +63,4 @@ Misc/AesEncryption.cs
 Misc/TokenProvider.cs
 Migrations/
 .vscode
+wwwroot

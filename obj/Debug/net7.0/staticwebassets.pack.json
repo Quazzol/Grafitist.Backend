@@ -1,0 +1,29 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\PersonalProjects\\GrafitistMonolith\\Grafitist.Backend\\wwwroot\\1\\133301072383400585.png",
+      "PackagePath": "staticwebassets\\1\\133301072383400585.png"
+    },
+    {
+      "Id": "D:\\PersonalProjects\\GrafitistMonolith\\Grafitist.Backend\\wwwroot\\1\\133301075892919685.png",
+      "PackagePath": "staticwebassets\\1\\133301075892919685.png"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.Grafitist.Backend.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.build.Grafitist.Backend.props",
+      "PackagePath": "build\\Grafitist.Backend.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildMultiTargeting.Grafitist.Backend.props",
+      "PackagePath": "buildMultiTargeting\\Grafitist.Backend.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildTransitive.Grafitist.Backend.props",
+      "PackagePath": "buildTransitive\\Grafitist.Backend.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

@@ -29,7 +29,7 @@ public class StockRepository : IStockRepository
         return await _context.Stocks!.FirstOrDefaultAsync(q => q.ProductId == productId);
     }
 
-    public async Task<IEnumerable<StockModel>> Get(int[] productIds)
+    public async Task<IEnumerable<StockModel>> Get(IEnumerable<int> productIds)
     {
         return await _context.Stocks!.Where(q => productIds.Contains(q.ProductId)).ToListAsync();
     }
@@ -49,8 +49,24 @@ public class StockRepository : IStockRepository
         if (stock is null) throw new KeyNotFoundException($"Model.Id not found! {model.Id}");
 
         stock.Quantity = model.Quantity;
-        stock.ReserveQty = model.ReserveQty;
+        stock.OrderQty = model.OrderQty;
         await _context.SaveChangesAsync();
         return stock;
+    }
+
+    public async Task<IEnumerable<StockModel>> Update(IEnumerable<StockModel> models)
+    {
+        var stocks = await _context.Stocks!.Where(q => models.Select(p => p.ProductId).Contains(q.ProductId)).ToListAsync();
+        if (stocks is null || stocks.Count == 0) throw new KeyNotFoundException("No ProductId found");
+
+        foreach (var stock in stocks)
+        {
+            var model = models.First(q => stock.ProductId == q.ProductId);
+            stock.Quantity = model.Quantity;
+            stock.OrderQty = model.OrderQty;
+        }
+
+        await _context.SaveChangesAsync();
+        return stocks;
     }
 }

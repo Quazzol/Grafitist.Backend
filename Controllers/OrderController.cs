@@ -1,6 +1,8 @@
+using Grafitist.Authorization;
 using Grafitist.Contracts.Order.Request;
 using Grafitist.Misc;
 using Grafitist.Services.Order.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Misc.Enums;
 
@@ -26,32 +28,41 @@ public class OrderController : ControllerBase
     }
 
     [HttpGet()]
+    [Authorize(Policy = Policies.HasLoggedIn)]
     public async Task<IActionResult> Get(Guid id)
     {
         return Ok(await _service.Get(id));
     }
 
     [HttpGet("get/{userId:Guid}")]
+    [Authorize(Policy = Policies.User)]
     public async Task<IActionResult> Get(Guid userId, [FromQuery] int pageNo, [FromQuery] int count, [FromQuery] bool onlyActive)
     {
         return Ok(await _service.Get(userId, new Pager { No = pageNo, Count = count, OnlyActive = onlyActive }));
     }
 
     [HttpGet("get-by-stats")]
+    [Authorize(Policy = Policies.Admin)]
     public async Task<IActionResult> Get([FromQuery] DateTime startDate, [FromQuery] DateTime endDate, OrderStatus? status, [FromQuery] int pageNo, [FromQuery] int count, [FromQuery] bool onlyActive)
     {
         return Ok(await _service.Get(new DateFilter { StartDate = startDate, EndDate = endDate }, status, new Pager { No = pageNo, Count = count, OnlyActive = onlyActive }));
     }
 
     [HttpPost]
-    public async Task<IActionResult> Insert(OrderInsertDTO model)
+    [Authorize(Policy = Policies.User)]
+    public async Task<IActionResult> Insert(OrderInsertDTO dto)
     {
-        return Ok(await _service.Insert(model));
+        if (!TryValidateModel(dto))
+            return ValidationProblem(ModelState);
+        return Ok(await _service.Insert(dto));
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update(OrderUpdateDTO model)
+    [Authorize(Policy = Policies.Admin)]
+    public async Task<IActionResult> Update(OrderUpdateDTO dto)
     {
-        return Ok(await _service.Update(model));
+        if (!TryValidateModel(dto))
+            return ValidationProblem(ModelState);
+        return Ok(await _service.Update(dto));
     }
 }

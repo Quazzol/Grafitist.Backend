@@ -35,10 +35,13 @@ public class ImageService : IImageService
 
     public async Task<ImageDTO?> Insert(ImageInsertDTO image)
     {
-        var result = await _imageManager.SaveImage(image.Image, RootPath(), image.ProductId);
-        if (result.Item1 is null || result.Item1.ToString() == string.Empty || result.Item2 == 0)
+        var result = await _imageManager.ConvertImage(image.Image, image.ProductModelId);
+        if (result is null)
             return null;
-        return _mapper.Map<ImageDTO>(await _repository.Insert(_mapper.Map<ImageModel>(image), result.Item1));
+        var model = _mapper.Map<ImageModel>(image);
+        model.Type = result.Value.Item1;
+        model.Data = result.Value.Item2;
+        return _mapper.Map<ImageDTO>(await _repository.Insert(model));
     }
 
     public async Task<ImageDTO?> Update(ImageUpdateDTO image)
@@ -48,21 +51,6 @@ public class ImageService : IImageService
 
     public async Task Delete(int id)
     {
-        var image = await Get(id);
-        if (image is null || image.Name is null)
-            return;
-
-        _imageManager.DeleteImage(_environment.WebRootPath, image.Name);
         await _repository.Delete(id);
-    }
-
-    private string RootPath()
-    {
-        string path = _environment.WebRootPath;
-        if (string.IsNullOrWhiteSpace(_environment.WebRootPath))
-        {
-            path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-        }
-        return path;
     }
 }

@@ -16,9 +16,6 @@ public class ProductProfile : Profile
         CreateMap<ColorModel, ColorDTO>();
         CreateMap<ColorInsertDTO, ColorModel>();
         CreateMap<ColorUpdateDTO, ColorModel>();
-        CreateMap<ItemModel, ItemDTO>();
-        CreateMap<ItemInsertDTO, ItemModel>();
-        CreateMap<ItemUpdateDTO, ItemModel>();
         CreateMap<MaterialModel, MaterialDTO>();
         CreateMap<MaterialInsertDTO, MaterialModel>();
         CreateMap<MaterialUpdateDTO, MaterialModel>();

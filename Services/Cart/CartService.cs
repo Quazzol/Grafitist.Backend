@@ -11,7 +11,7 @@ using Grafitist.Services.Cart.Interfaces;
 using Grafitist.Services.Order.Interfaces;
 using Misc.Enums;
 
-namespace Grafitist.CartService.Services;
+namespace Grafitist.Services.CartService;
 
 public class CartService : ICartService
 {
@@ -22,7 +22,8 @@ public class CartService : ICartService
     private readonly IPriceManager _priceManager;
     private readonly IOrderService _orderService;
 
-    public CartService(ICartRepository repository, ICartLineRepository lineRepository, IUserContext userContext, IMapper mapper, IPriceManager priceManager, IOrderService orderService)
+    public CartService(ICartRepository repository, ICartLineRepository lineRepository, IUserContext userContext, IMapper mapper,
+                    IPriceManager priceManager, IOrderService orderService)
     {
         _repository = repository;
         _lineRepository = lineRepository;
